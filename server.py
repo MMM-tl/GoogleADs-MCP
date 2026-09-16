@@ -12,6 +12,7 @@ from mcp.server.fastmcp import FastMCP
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
+from starlette.routing import Route
 
 # ---------------------------------------------------------------------------
 # Auth middleware: simple bearer token check.
@@ -317,15 +318,16 @@ def budget_pacing(customer_id: str = "") -> str:
 # App entrypoint
 # ---------------------------------------------------------------------------
 
-# Attach auth middleware + health endpoint to the underlying Starlette app
-app = mcp.streamable_http_app()
-app.user_middleware.insert(0, Middleware(BearerAuthMiddleware))
-app.middleware_stack = app.build_middleware_stack()
 
-
-@app.route("/health")
 async def health(request):
     return JSONResponse({"status": "ok"})
+
+
+# Build the Starlette app, register /health, then attach auth middleware
+app = mcp.streamable_http_app()
+app.router.routes.insert(0, Route("/health", health, methods=["GET"]))
+app.user_middleware.insert(0, Middleware(BearerAuthMiddleware))
+app.middleware_stack = app.build_middleware_stack()
 
 
 if __name__ == "__main__":
