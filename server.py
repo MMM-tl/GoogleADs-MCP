@@ -57,7 +57,7 @@ def get_client():
         # Reads GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_ADS_CLIENT_ID,
         # GOOGLE_ADS_CLIENT_SECRET, GOOGLE_ADS_REFRESH_TOKEN,
         # GOOGLE_ADS_LOGIN_CUSTOMER_ID (optional) from env vars.
-        _client = GoogleAdsClient.load_from_env(version="v19")
+        _client = GoogleAdsClient.load_from_env()
     return _client
 
 
